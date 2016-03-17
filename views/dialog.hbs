@@ -21,10 +21,14 @@
 </style>
 <div class="aui-group">
   <div class="aui-item">
+    {{#if secrets}}
     <ul class="secrets__list">
     {{#secrets}}
       <li class="secrets__item"><img class="secrets__service-image" src="{{{serviceImage}}}" /><div>{{label}}</div><button class="secrets__button" data-action="token" data-label="{{label}}">產生 token</button></li>
     {{/secrets}}
     </ul>
+    {{else}}
+    <p>目前尚未添加任何鑰匙，使用 <b>/authy add <keyUri></b> 來添加新鑰匙吧！</p>
+    {{/if}}
   </div>
 </div>
