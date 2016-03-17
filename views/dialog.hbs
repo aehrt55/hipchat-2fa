@@ -3,11 +3,27 @@
 <!-- The dialog has a primary action "say hello", declared in the descriptor atlassian-connect.json -->
 <!-- It is implemented in the js/addon.js file imported in the layout -->
 
+<style>
+.secrets__list {
+  padding: 1em;
+}
+.secrets__item {
+  display: flex;
+  align-items: center;
+  margin-bottom: .8em;
+}
+.secrets__service-image {
+  display: block;
+  width: 2.5em;
+  height: 2.5em;
+  margin-right: 1em;
+}
+</style>
 <div class="aui-group">
   <div class="aui-item">
-    <ul style="padding: 1em">
+    <ul class="secrets__list">
     {{#secrets}}
-      <li style="display: flex; align-items: center; margin-bottom: .8em;"><img src="{{{serviceImage}}}" style="display: block; width: 2.5em; height: 2.5em; margin-right: 1em" /><div>{{label}}</div></li>
+      <li class="secrets__item"><img class="secrets__service-image" src="{{{serviceImage}}}" /><div>{{label}}</div><button class="secrets__button" data-action="token" data-label="{{label}}">產生 token</button></li>
     {{/secrets}}
     </ul>
   </div>

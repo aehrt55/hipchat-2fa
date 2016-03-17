@@ -145,24 +145,25 @@ module.exports = function (app, addon) {
   // Sample endpoint to send a card notification back into the chat room
   // See https://developer.atlassian.com/hipchat/guide/sending-messages
   app.post('/send_notification',
-    addon.authenticate(),
-    function (req, res) {
-      var card = {
-        "style": "link",
-        "url": "https://www.hipchat.com",
-        "id": uuid.v4(),
-        "title": req.body.messageTitle,
-        "description": "Great teams use HipChat: Group and private chat, file sharing, and integrations",
-        "icon": {
-          "url": "https://hipchat-public-m5.atlassian.com/assets/img/hipchat/bookmark-icons/favicon-192x192.png"
-        }
-      };
-      var msg = '<b>' + card.title + '</b>: ' + card.description;
-      var opts = { 'options': { 'color': 'yellow' } };
-      hipchat.sendMessage(req.clientInfo, req.identity.roomId, msg, opts, card);
-      res.json({ status: "ok" });
-    }
-    );
+  addon.authenticate(),
+  function (req, res) {
+    authy.token(req.identity.roomId, req.body.label, function(err, obj) {
+      if (err) {
+        console.error(err);
+        hipchat.sendMessage(req.clientInfo, req.identity.roomId, err.message, {
+          color: 'red'
+        })
+        .then(function (data) {
+          res.status(200).send();
+        });
+      } else {
+        hipchat.sendMessage(req.clientInfo, req.identity.roomId, obj.message, obj.opts, obj.card)
+        .then(function (data) {
+          res.status(200).send();
+        });
+      }
+    });
+  });
 
   // This is an example route to handle an incoming webhook
   // https://developer.atlassian.com/hipchat/guide/webhooks

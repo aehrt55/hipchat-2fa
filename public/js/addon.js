@@ -29,6 +29,26 @@ $(document).ready(function () {
       }
     });
   }
+  
+  function showToken(label, cb) {
+    HipChat.auth.withToken(function (err, token) {
+      if (! err) {
+        $.ajax({
+          type: 'POST',
+          url: '/send_notification',
+          headers: {Authorization: 'JWT ' + token},
+          dataType: 'json',
+          data: {label: label},
+          success: function () {
+            cb(false);
+          },
+          error: function () {
+            cb(true);
+          }
+        });
+      }
+    });
+  }
 
   /* Functions used by sidebar.hbs */
 
@@ -65,6 +85,14 @@ $(document).ready(function () {
         $('#details-title').html('User details');
         $('#details').html(JSON.stringify(data, null, 2));
       }
+    });
+  });
+  
+  $('[data-action=token]').on('click', function() {
+    showToken(this.dataset.label, function(err) {
+      HipChat.require("dialog", function(dialog) {
+        dialog.close();
+      });
     });
   });
 
