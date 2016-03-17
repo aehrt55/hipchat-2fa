@@ -5,11 +5,10 @@
 
 <div class="aui-group">
   <div class="aui-item">
-    <h3>Your sidebar goes here!</h3>
-    <ul>
-      <li>Group ID: {{identity.groupId}}</li>
-      <li>Room ID: {{identity.roomId}}</li>
-      <li>User ID: {{identity.userId}}</li>
+    <ul style="padding: 1em">
+    {{#secrets}}
+      <li style="display: flex; align-items: center; margin-bottom: .8em;"><img src="{{{serviceImage}}}" style="display: block; width: 2.5em; height: 2.5em; margin-right: 1em" /><div>{{label}}</div></li>
+    {{/secrets}}
     </ul>
   </div>
 </div>

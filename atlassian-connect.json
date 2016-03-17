@@ -58,7 +58,7 @@
       {
         "key": "sample.dialog",
         "title": {
-          "value": "Hello Dialog!"
+          "value": "Key List"
         },
         "url": "{{localBaseUrl}}/dialog",
         "options": {
@@ -81,7 +81,7 @@
       {
         "key": "sample.action",
         "name": {
-          "value": "Open Hello Dialog!"
+          "value": "list keys"
         },
         "target": "sample.dialog",
         "location": "hipchat.input.action"

@@ -1,11 +1,18 @@
 var http = require('request');
 var cors = require('cors');
+var hbs = require('express-hbs');
 var mongoose = require('mongoose');
 var uuid = require('uuid');
 var url = require('url');
 
 var authy = require('../lib/authy');
 var Room = require('../lib/models/room');
+var Secret = require('../lib/models/secret');
+
+hbs.registerHelper('serviceImage', function(secret) {
+  var service = this.serviceProvider || this.issuer;
+  return authy.serviceProviderLogo(service);
+});
 
 mongoose.connect('mongodb://localhost/authy');
 var db = mongoose.connection;
@@ -120,13 +127,20 @@ module.exports = function (app, addon) {
   // This is an example dialog controller that can be launched when clicking on the glance.
   // https://developer.atlassian.com/hipchat/guide/dialog-and-sidebar-views/dialog
   app.get('/dialog',
-    addon.authenticate(),
-    function (req, res) {
-      res.render('dialog', {
-        identity: req.identity
-      });
-    }
-    );
+  addon.authenticate(),
+  Room.parse(hipchat),
+  function (req, res) {
+    Secret.find({roomId: req.identity.roomId})
+    .exec(function(err, secrets) {
+      if (err) {
+        console.error(err);
+      } else {
+        res.render('dialog', {
+          secrets: secrets
+        });
+      }
+    });
+  });
 
   // Sample endpoint to send a card notification back into the chat room
   // See https://developer.atlassian.com/hipchat/guide/sending-messages
