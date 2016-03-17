@@ -1,7 +1,15 @@
 var http = require('request');
 var cors = require('cors');
+var mongoose = require('mongoose');
 var uuid = require('uuid');
 var url = require('url');
+
+var authy = require('../lib/authy');
+var Room = require('../lib/models/room');
+
+mongoose.connect('mongodb://localhost/authy');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
 // This is the heart of your HipChat Connect add-on. For more information,
 // take a look at https://developer.atlassian.com/hipchat/tutorials/getting-started-with-atlassian-connect-express-node-js
@@ -145,14 +153,27 @@ module.exports = function (app, addon) {
   // This is an example route to handle an incoming webhook
   // https://developer.atlassian.com/hipchat/guide/webhooks
   app.post('/webhook',
-    addon.authenticate(),
-    function (req, res) {
-      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'pong')
+  addon.authenticate(),
+  Room.parse(hipchat),
+  authy.parse,
+  function (req, res) {
+    authy(req, res, function(err, obj) {
+      if (err) {
+        console.error(err);
+        hipchat.sendMessage(req.clientInfo, req.identity.roomId, err.message, {
+          color: 'red'
+        })
         .then(function (data) {
           res.sendStatus(200);
         });
-    }
-    );
+      } else {
+        hipchat.sendMessage(req.clientInfo, req.identity.roomId, obj.message, obj.opts, obj.card)
+        .then(function (data) {
+          res.sendStatus(200);
+        });
+      }
+    });
+  });
 
   // Notify the room that the add-on was installed. To learn more about
   // Connect's install flow, check out:
