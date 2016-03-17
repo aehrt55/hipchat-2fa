@@ -30,30 +30,6 @@
       "name": "Hello!",
       "authentication": "jwt"
     },
-    "glance": [
-      {
-        "name": {
-          "value": "Hello!"
-        },
-        "queryUrl": "{{localBaseUrl}}/glance",
-        "key": "sample.glance",
-        "target": "sample.sidebar",
-        "icon": {
-          "url": "{{localBaseUrl}}/img/logo.png",
-          "url@2x": "{{localBaseUrl}}/img/logo.png"
-        }
-      }
-    ],
-    "webPanel": [
-      {
-        "key": "sample.sidebar",
-        "name": {
-          "value": "Hello Sidebar!"
-        },
-        "location": "hipchat.sidebar.right",
-        "url": "{{localBaseUrl}}/sidebar"
-      }
-    ],
     "dialog": [
       {
         "key": "sample.dialog",
